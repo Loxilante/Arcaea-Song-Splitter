@@ -249,12 +249,16 @@ int _main_(void)
             if (output_object_start_time < 0 || output_object_end_time < 0) should_output = false;
 
             output_line = type + "(" + std::to_string(output_object_start_time) + "," + std::to_string(output_object_end_time);
-            for ( ; line[now_position] != ')'; now_position++) output_line.push_back(line[now_position]);
+            for ( ; now_position < line.size(); now_position++)
+            {
+                output_line.push_back(line[now_position]);
+                if (type == "arc" && line[now_position] == ')') break;
+            }
 
             if (type == "arc")
             {
                 std::string num_arctap;
-                for ( ; now_position < line.size(); now_position++)
+                for (now_position += 1; now_position < line.size(); now_position++)
                 {
                     if (isdigit(line[now_position])) num_arctap.push_back(line[now_position]);
                     else
@@ -363,7 +367,11 @@ int main(void)
     {
         int status = _main_();
 
-        if (status) return status;
+        if (status)
+        {
+            system("pause");
+            return status;
+        }
         else
         {
             std::cout << "Again? (0:No / 1:Yes)" << std::endl;
